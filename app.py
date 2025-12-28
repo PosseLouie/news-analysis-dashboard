@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 from sklearn.preprocessing import StandardScaler
 from sklearn.decomposition import PCA
+import streamlit.components.v1 as components  # 新增这行
 from PIL import Image
 
 # ==========================================
@@ -50,9 +51,7 @@ st.set_page_config(
 # ==========================================
 st.sidebar.title("🔬 研究控制台")
 # 去除"本系统用于..."的说明书语气，改为项目背景描述
-st.sidebar.info("基于《英俄语虚假新闻共性计量特征挖掘》的核心实验复现平台。")
-st.sidebar.markdown("---")
-st.sidebar.markdown("**汇报人：** 杨妤童") 
+st.sidebar.info("英俄语虚假新闻共性计量特征挖掘Method复现")
 
 # 选项文案微调，去除序号，显得更现代
 option = st.sidebar.radio(
@@ -76,6 +75,19 @@ df_raw = load_data()
 if df_raw is None:
     st.error("⚠️ 数据文件缺失：请确认 'step1_selected_features.xlsx' 已上传至根目录。")
     st.stop()
+
+def scroll_to_top():
+    # 这段 JS 代码会找到 Streamlit 的主滚动容器并将其卷动到顶部
+    js_code = """
+        <script>
+            var body = window.parent.document.querySelector(".main");
+            console.log(body);
+            if (body) {
+                body.scrollTop = 0;
+            }
+        </script>
+    """
+    components.html(js_code, height=0)
 
 # ==========================================
 # 4. 模块一：数据概览
@@ -130,6 +142,7 @@ if option == "数据概览与特征":
 # 5. 模块二：PCA 3D 可视化
 # ==========================================
 elif option == "PCA 降维分析":
+    scroll_to_top()
     st.title("🧊 多维特征空间的降维观测")
     # 用叙述性语言替代功能介绍
     st.markdown("""
